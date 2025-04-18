@@ -45,7 +45,7 @@ const Footer = () => {
       </div>
 
       <div className="flex items-center justify-between md:flex-row flex-col gap-5 pt-10 mt-10 sm:mt-16 border-t">
-        <p className="md:text-base xs:text-sm text-xs">
+        <p className="md:text-base xs:text-sm text-xs text-black">
           Copyright Ⓒ {date} MicroMatch. All Rights Reserved.
         </p>
         <div>
