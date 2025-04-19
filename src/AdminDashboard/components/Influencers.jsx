@@ -1,5 +1,6 @@
 /* This is the Influencers component, that shows a list of the influencer profiles. */
-import React from 'react';
+import React, { useState } from 'react';
+import '../../components/Modal.css'
 
 // Dummy data for influencers
 const dummyInfluencers = [
@@ -8,15 +9,37 @@ const dummyInfluencers = [
   { id: 3, name: 'Influencer Three', email: 'influencer3@example.com', socialMedia: 'YouTube', followers: '200K' },
 ];
 
-const Influencers = ({ influencers }) => {
+const Influencers = ({ influencers, rejectBrand }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [brandToReject, setBrandToReject] = useState(null);
+
+  const openModal = (influencer) => {
+    setBrandToReject(influencer);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleReject = () => {
+    if (brandToReject) {
+      rejectBrand(brandToReject.id); // Assuming rejectBrand function takes an ID
+      closeModal();
+    }
+  };
+
   // Use dummy data if influencers prop is undefined or not provided
   const influencersData = influencers || dummyInfluencers;
 
-  if(!influencers){
+  if (!influencers) {
     console.log("Using dummy data for influencers")
-  }else{
+  } else {
     console.log("Using data from prop for influencers")
   }
+
+
+
 
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
@@ -42,13 +65,41 @@ const Influencers = ({ influencers }) => {
                 <td className="py-4 px-6 text-sm text-gray-900">{influencer.socialMedia}</td>
                 <td className="py-4 px-6 text-sm text-gray-900">{influencer.followers}</td>
                 <td className="py-4 px-6 text-sm text-gray-900">
-                  <button className="text-red-600 hover:text-red-800">Delete</button>
+                  <button onClick={() => openModal(influencer)} className="text-red-600 hover:text-red-800">Reject</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {/* Reject Brand Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-50 flex justify-center items-center">
+          <div className='modal'>
+            <div className="modal-content">
+                <div className="modal-header">
+                    <h3 className="modal-title">Reject Brand</h3>
+                </div>
+                <div className="modal-body">
+                    <p>Are you sure you want to reject this brand?</p>
+                </div>
+                <div className="modal-footer">
+                    <button
+                        onClick={closeModal}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleReject}
+                    >
+                        Reject
+                    </button>
+                </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

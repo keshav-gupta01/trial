@@ -2,22 +2,23 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BarChart2,
+  Rocket,
+  History,
+  Activity,
+  Wallet,
   Bell,
   User,
   Settings,
   LogOut,
   Menu,
-  HeartHandshake,
-  DollarSign,
-  TrendingUp,
 } from "lucide-react";
 
 const SIDEBAR_ITEMS = [
-  { name: "Overview", icon: BarChart2, color: "#6366F1" },
-  { name: "Collaborations", icon: HeartHandshake, color: "#8B5CF6" },
-  { name: "Sales", icon: DollarSign, color: "#10B981" },
-  { name: "Analytics", icon: TrendingUp, color: "#3B82F6" },
-  { name: "Settings", icon: Settings, color: "#6EE7B7" },
+  { name: "Overview", icon: BarChart2, href: "/overview", color: "#8B5CF6" },
+  { name: "Launch Campaign", icon: Rocket, href: "/launch", color: "#10B981" },
+  { name: "Previous Campaigns", icon: History, href: "/previous", color: "#3B82F6" },
+  { name: "Analytics", icon: Activity, href: "/analytics", color: "#6EE7B7" },
+  { name: "Wallet", icon: Wallet, href: "/wallet", color: "#6366F1" },
 ];
 
 const icons = {
@@ -65,7 +66,11 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                   isActive ? "bg-gray-700" : "hover:bg-gray-700"
                 }`}
               >
-                <item.icon size={20} style={{ color: item.color, minWidth: "20px" }} className="mr-4" />
+                <item.icon
+                  size={20}
+                  style={{ color: item.color, minWidth: "20px" }}
+                  className="mr-4"
+                />
                 <AnimatePresence>
                   {isSidebarOpen && (
                     <motion.span

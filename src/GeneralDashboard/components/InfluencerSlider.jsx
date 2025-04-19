@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
+import Slider from "react-slick"; // Add this import
+import "./slick.css"; // Corrected import for slick styles
+import "./slick-theme.css"; // Corrected import for slick theme
 import "../GeneralDashboard.css";
 
 const InfluencerSlider = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(3);
-  const sliderRef = useRef(null);
 
   const influencers = [
     {
@@ -99,14 +100,17 @@ const InfluencerSlider = () => {
     return () => window.removeEventListener("resize", updateCardsPerView);
   }, []);
 
-  const maxIndex = Math.max(0, influencers.length - cardsPerView);
-
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
+  const settings = {
+    infinite: true,
+    speed: 4500, // Adjust speed as needed
+    slidesToShow: cardsPerView,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 0, // Continuous scroll
+    cssEase: "linear",
+    pauseOnHover: true, // Pause on hover
+    arrows: false, // Disable arrows
+    dots: false, // Disable dots
   };
 
   return (
@@ -119,87 +123,50 @@ const InfluencerSlider = () => {
       </div>
 
       <div className="relative">
-        {/* Arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-0 top-1/2 -translate-y-1/2 bg-white text-gray-600 border border-gray-300 rounded-full p-2 z-10 shadow-md hover:bg-gray-100"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
+        <Slider {...settings}>
+          {influencers.map((influencer) => (
+            <div key={influencer.id} className="p-4">
+              <div className="bg-white rounded-2xl border border-gray-200 shadow hover:shadow-xl transition duration-300 h-full flex flex-col">
+                <div className="w-full aspect-square overflow-hidden rounded-t-2xl">
+                  <img
+                    src={influencer.imageUrl}
+                    alt={influencer.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => (e.target.src = "/api/placeholder/300/300")}
+                  />
+                </div>
+                <div className="p-5 flex-grow flex flex-col">
+                  <h3 className="text-xl font-semibold text-gray-800">{influencer.name}</h3>
+                  <p className="text-sm text-blue-500 mb-3">{influencer.category}</p>
 
-        <div className="overflow-hidden" ref={sliderRef}>
-          <div
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${(100 / cardsPerView) * currentIndex}%)` }}
-          >
-            {influencers.map((influencer) => (
-              <div key={influencer.id} className="p-4" style={{ flex: `0 0 ${100 / cardsPerView}%` }}>
-                <div className="bg-white rounded-2xl border border-gray-200 shadow hover:shadow-xl transition duration-300 h-full flex flex-col">
-                  <div className="w-full aspect-square overflow-hidden rounded-t-2xl">
-                    <img
-                      src={influencer.imageUrl}
-                      alt={influencer.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => (e.target.src = "/api/placeholder/300/300")}
-                    />
-                  </div>
-                  <div className="p-5 flex-grow flex flex-col">
-                    <h3 className="text-xl font-semibold text-gray-800">{influencer.name}</h3>
-                    <p className="text-sm text-blue-500 mb-3">{influencer.category}</p>
-
-                    <div className="flex justify-between mb-4 text-sm text-gray-600">
-                      <div className="text-center">
-                        <p className="font-medium text-gray-900">{formatNumber(influencer.followers)}</p>
-                        <p>Followers</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="font-medium text-gray-900">{influencer.engagement}%</p>
-                        <p>Engagement</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="font-medium text-gray-900">{influencer.posts}</p>
-                        <p>Posts</p>
-                      </div>
+                  <div className="flex justify-between mb-4 text-sm text-gray-600">
+                    <div className="text-center">
+                      <p className="font-medium text-gray-900">{formatNumber(influencer.followers)}</p>
+                      <p>Followers</p>
                     </div>
-
-                    <p className="text-gray-500 text-sm mb-4 flex-grow">{influencer.bio}</p>
-
-                    <a
-                      href={influencer.profileUrl}
-                      className="text-center py-2 px-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-medium hover:brightness-110 transition"
-                    >
-                      View Profile
-                    </a>
+                    <div className="text-center">
+                      <p className="font-medium text-gray-900">{influencer.engagement}%</p>
+                      <p>Engagement</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="font-medium text-gray-900">{influencer.posts}</p>
+                      <p>Posts</p>
+                    </div>
                   </div>
+
+                  <p className="text-gray-500 text-sm mb-4 flex-grow">{influencer.bio}</p>
+
+                  <a
+                    href={influencer.profileUrl}
+                    className="text-center py-2 px-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-medium hover:brightness-110 transition"
+                  >
+                    View Profile
+                  </a>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        <button
-          onClick={nextSlide}
-          className="absolute right-0 top-1/2 -translate-y-1/2 bg-white text-gray-600 border border-gray-300 rounded-full p-2 z-10 shadow-md hover:bg-gray-100"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
-
-      {/* Dots */}
-      <div className="flex justify-center mt-6 gap-2">
-        {Array.from({ length: Math.ceil(influencers.length / cardsPerView) }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`w-3 h-3 rounded-full ${
-              currentIndex === index ? "bg-blue-600" : "bg-gray-300"
-            } transition-colors`}
-          />
-        ))}
+            </div>
+          ))}
+        </Slider>
       </div>
     </div>
   );
